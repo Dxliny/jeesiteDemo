@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.tbclass.dao.TbStudentDao">
+    
+	<sql id="tbStudentColumns">
+		a.id AS "id",
+		a.s_class_id AS "stuClassId",
+		a.s_name AS "stuName",
+		a.s_age AS "stuAge",
+		a.s_sex AS "stuSex"
+	</sql>
+	
+	<sql id="tbStudentJoins">
+		LEFT JOIN tb_class b ON b.id = a.s_class_id
+	</sql>
+    
+	<select id="get" resultType="TbStudent">
+		SELECT 
+			<include refid="tbStudentColumns"/>
+		FROM tb_student a
+		<include refid="tbStudentJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="TbStudent">
+		SELECT 
+			<include refid="tbStudentColumns"/>
+		FROM tb_student a
+		<include refid="tbStudentJoins"/>
+		<where>
+			
+			<if test="stuClassId != null and stuClassId != ''">
+				AND a.s_class_id = #{stuClassId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="TbStudent">
+		SELECT 
+			<include refid="tbStudentColumns"/>
+		FROM tb_student a
+		<include refid="tbStudentJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tb_student(
+			id,
+			s_class_id,
+			s_name,
+			s_age,
+			s_sex
+		) VALUES (
+			#{id},
+			#{stuClassId},
+			#{stuName},
+			#{stuAge},
+			#{stuSex}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tb_student SET 	
+			s_class_id = #{stuClassId},
+			s_name = #{stuName},
+			s_age = #{stuAge},
+			s_sex = #{stuSex}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM tb_student
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE s_class_id = #{stuClassId}
+			</otherwise>
+		</choose>
+	</update>
+	
+</mapper>

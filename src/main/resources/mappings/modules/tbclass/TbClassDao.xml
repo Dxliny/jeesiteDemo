@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.tbclass.dao.TbClassDao">
+    
+	<sql id="tbClassColumns">
+		a.id AS "id",
+		a.c_name AS "className",
+		a.c_num AS "classNum",
+		a.c_del_flag AS "classDelFlag"
+	</sql>
+	
+	<sql id="tbClassJoins">
+	</sql>
+    
+	<select id="get" resultType="TbClass">
+		SELECT 
+			<include refid="tbClassColumns"/>
+		FROM tb_class a
+		<include refid="tbClassJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="TbClass">
+		SELECT 
+			<include refid="tbClassColumns"/>
+		FROM tb_class a
+		<include refid="tbClassJoins"/>
+		<where>
+			
+			<if test="className != null and className != ''">
+				AND a.c_name = #{className}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="TbClass">
+		SELECT 
+			<include refid="tbClassColumns"/>
+		FROM tb_class a
+		<include refid="tbClassJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tb_class(
+			id,
+			c_name,
+			c_num,
+			c_del_flag
+		) VALUES (
+			#{id},
+			#{className},
+			#{classNum},
+			#{classDelFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tb_class SET 	
+			c_name = #{className},
+			c_num = #{classNum},
+			c_del_flag = #{classDelFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM tb_class
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
